@@ -95,6 +95,9 @@
    </widget>
   </widget>
   <widget class="QTableWidget" name="exerciseTable">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>19</x>
@@ -102,6 +105,12 @@
      <width>331</width>
      <height>221</height>
     </rect>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::NoSelection</enum>
    </property>
    <column>
     <property name="text">
@@ -144,10 +153,14 @@
      </widget>
     </item>
     <item row="2" column="1">
-     <widget class="QDateTimeEdit" name="dateTimeEdit"/>
+     <widget class="QDateTimeEdit" name="dateTimeEdit">
+      <property name="displayFormat">
+       <string>yyyy-MM-dd hh:mm</string>
+      </property>
+     </widget>
     </item>
     <item row="1" column="1">
-     <widget class="QDoubleSpinBox" name="doubleSpinBox">
+     <widget class="QDoubleSpinBox" name="bodyweightSpinBox">
       <property name="maximum">
        <double>500.000000000000000</double>
       </property>
