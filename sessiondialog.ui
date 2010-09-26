@@ -46,7 +46,11 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="weightComboBox"/>
+      <widget class="QDoubleSpinBox" name="weightSpinBox">
+       <property name="maximum">
+        <double>500.000000000000000</double>
+       </property>
+      </widget>
      </item>
      <item row="0" column="1">
       <widget class="QComboBox" name="exerciseComboBox"/>
@@ -101,6 +105,11 @@
    </property>
    <column>
     <property name="text">
+     <string>ID</string>
+    </property>
+   </column>
+   <column>
+    <property name="text">
      <string>Exercise</string>
     </property>
    </column>
@@ -138,7 +147,11 @@
      <widget class="QDateTimeEdit" name="dateTimeEdit"/>
     </item>
     <item row="1" column="1">
-     <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
+     <widget class="QDoubleSpinBox" name="doubleSpinBox">
+      <property name="maximum">
+       <double>500.000000000000000</double>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

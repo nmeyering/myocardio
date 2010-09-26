@@ -53,4 +53,4 @@ class SessionDialog( QDialog ):
 		self.cur.execute("SELECT * FROM 'exercise' ORDER BY 'name';")
 		exercises = self.cur.fetchall()
 		for e in exercises:
-			self.cb.addItem( str( e[1] ), e[0] )
+			self.cb.addItem( e[1], e[0] )
