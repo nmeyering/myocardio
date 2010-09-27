@@ -52,7 +52,9 @@ class SessionDialog( QDialog ):
 		self.insertItem( self.table, res )
 
 	def deleteItem( self ):
-		pass
+		row = self.table.currentRow()
+		self.table.removeRow( row )
+			
 	
 	def dbSplit( self ):
 		self.cur.execute("SELECT * FROM 'split';")
@@ -62,10 +64,9 @@ class SessionDialog( QDialog ):
 
 	def fillSplitTable( self ):
 		split_id = self.splitbox.itemData( self.splitbox.currentIndex() )
-		print( "trying to get exercises for Split No.: {0}".format( split_id ) )
 		try:
 			self.cur.execute(
-				"SELECT exercise.name, MAX(completed_exercise.weight) FROM 'exercise', 'completed_exercise' WHERE exercise.id = completed_exercise.exercise_id AND exercise.split_id = ? GROUP BY exercise.name;",
+				"SELECT exercise.name, MAX(completed_exercise.weight) maxweight, MAX(session.date) maxdate FROM completed_exercise LEFT JOIN exercise ON exercise.id = completed_exercise.exercise_id LEFT JOIN session ON session.id = completed_exercise.session_id WHERE (exercise.split_id = ? OR exercise.split_id is null) GROUP BY exercise.name ORDER BY maxdate ASC;",
 				(split_id,)
 			)
 			rows = self.cur.fetchall()
@@ -102,4 +103,3 @@ class SessionDialog( QDialog ):
 				)
 		except sqlite3.Error as e:
 			print("An error occurred:", e.args[0])
-		#self.accept()
