@@ -1,0 +1,5 @@
+#!/bin/bash
+rm data/db
+echo "Initializing test database..."
+sqlite3 data/db ".read db.sql"
+echo "Done."

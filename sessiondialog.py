@@ -12,14 +12,16 @@ class SessionDialog( QDialog ):
 		self.ui = Ui_Dialog()
 		self.ui.setupUi( self )
 
+		self.cb = self.ui.exerciseComboBox
+		self.sb = self.ui.weightSpinBox
+		self.table = self.ui.exerciseTable
+		self.splitbox = self.ui.splitplanComboBox
+
 		self.ui.cancelButton.clicked.connect( self.reject )
 		self.ui.okButton.clicked.connect( self.commit )
 		self.ui.addButton.clicked.connect( self.addExerciseItem )
 		self.ui.deleteButton.clicked.connect( self.deleteItem )
-
-		self.cb = self.ui.exerciseComboBox
-		self.sb = self.ui.weightSpinBox
-		self.table = self.ui.exerciseTable
+		self.splitbox.currentIndexChanged.connect( self.fillSplitTable )
 
 		self.ui.dateTimeEdit.setDateTime( QDateTime.currentDateTime() )
 
@@ -29,13 +31,14 @@ class SessionDialog( QDialog ):
 		self.cur = self.con.cursor()
 
 		self.dbExercises()
+		self.dbSplit()
 
-	def insertItem( self, item ):
-		row = self.table.rowCount()
-		self.table.insertRow( row )
+	def insertItem( self, table, item ):
+		row = table.rowCount()
+		table.insertRow( row )
 
 		for i in range( len( item ) ):
-			self.table.setItem(
+			table.setItem(
 				row,
 				i,
 				QTableWidgetItem( item[i] )
@@ -43,16 +46,42 @@ class SessionDialog( QDialog ):
 
 	def addExerciseItem( self ):
 		res = []
-		res.append( self.cb.itemData( self.cb.currentIndex() ).toString() )
+		res.append( str( self.cb.itemData( self.cb.currentIndex() ) ) )
 		res.append( self.cb.currentText() )
 		res.append( str( self.sb.value() ) )
-		self.insertItem( res )
+		self.insertItem( self.table, res )
 
 	def deleteItem( self ):
 		pass
 	
+	def dbSplit( self ):
+		self.cur.execute("SELECT * FROM 'split';")
+		split = self.cur.fetchall()
+		for s in split:
+			self.splitbox.addItem( s['description'], s['id'] )
+
+	def fillSplitTable( self ):
+		split_id = self.splitbox.itemData( self.splitbox.currentIndex() )
+		print( "trying to get exercises for Split No.: {0}".format( split_id ) )
+		try:
+			self.cur.execute(
+				"SELECT exercise.name, MAX(completed_exercise.weight) FROM 'exercise', 'completed_exercise' WHERE exercise.id = completed_exercise.exercise_id AND exercise.split_id = ? GROUP BY exercise.name;",
+				(split_id,)
+			)
+			rows = self.cur.fetchall()
+		except sqlite3.Error as e:
+			print("An error occurred:", e.args[0])
+
+		splitTable = self.ui.splitplanTable
+
+		for i in range( splitTable.rowCount() ):
+			splitTable.removeRow( 0 )
+
+		for r in rows:
+			self.insertItem( splitTable, [ str(i) for i in list(r) ] )
+
 	def dbExercises( self ):
-		self.cur.execute("SELECT * FROM 'exercise' ORDER BY 'name';")
+		self.cur.execute("SELECT * FROM 'exercise' ORDER BY name;")
 		exes = self.cur.fetchall()
 		for e in exes:
 			self.cb.addItem( e['name'], e['id'] )
@@ -73,4 +102,4 @@ class SessionDialog( QDialog ):
 				)
 		except sqlite3.Error as e:
 			print("An error occurred:", e.args[0])
-		self.accept()
+		#self.accept()
