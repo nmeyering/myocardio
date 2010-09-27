@@ -1,0 +1,10 @@
+CREATE TABLE session(id integer PRIMARY KEY, weight real, date text);
+CREATE TABLE exercise(id integer PRIMARY KEY, name text NOT NULL, split_id integer);
+CREATE TABLE split(id integer PRIMARY KEY, description text NOT NULL);
+CREATE TABLE completed_exercise(id integer PRIMARY KEY, session_id integer NOT NULL, exercise_id integer NOT NULL, weight real );
+INSERT INTO 'split' VALUES(1,'Rücken, Bizeps');
+INSERT INTO 'split' VALUES(2,'Schultern, Trizeps');
+INSERT INTO 'exercise' ('name', 'split_id') VALUES('Klimmzüge',1);
+INSERT INTO 'exercise' ('name', 'split_id') VALUES('Bankdrücken',2);
+INSERT INTO 'exercise' ('name', 'split_id') VALUES('Latzug',1);
+INSERT INTO 'completed_exercise' VALUES(1,1,1,32.5);
