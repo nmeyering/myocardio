@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import sys
 from PyQt4 import QtCore, QtGui
 from PyQt4.QtGui import QDialog, QApplication
