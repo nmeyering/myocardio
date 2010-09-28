@@ -1,0 +1,8 @@
+#!/bin/bash
+
+temp_file=$(mktemp)
+echo "Temporary file $temp_file created"
+minimum_date=$(sqlite3 data/db 'SELECT MIN(date) FROM session;');
+sqlite3 data/db "SELECT ROUND(JULIANDAY(date) - JULIANDAY('$minimum_date')),weight FROM session" | sed -e 's/|/ /' > $temp_file
+cat weight_plot.gnuplot | sed -e "s#<myfile>#$temp_file#" -e "s#<min-date>#${minimum_date}#" | gnuplot -
+rm $temp_file
