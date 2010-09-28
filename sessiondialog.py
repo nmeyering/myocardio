@@ -1,6 +1,6 @@
 # coding=utf-8
 from PyQt4 import QtGui, QtCore
-from PyQt4.QtGui import QDialog, QTableWidget, QTableWidgetItem
+from PyQt4.QtGui import QDialog, QTableWidget, QTableWidgetItem, QImage, QPixmap, QLabel, QVBoxLayout
 from PyQt4.QtCore import QVariant, QDateTime
 from ui_sessiondialog import Ui_Dialog
 import sqlite3
@@ -25,13 +25,21 @@ class SessionDialog( QDialog ):
 
 		self.ui.dateTimeEdit.setDateTime( QDateTime.currentDateTime() )
 
-		self.con = sqlite3.connect("data/db")
+		self.weightPlot = QImage( "data/weight_plot.png" )
+		self.ui.imageLabel = QLabel()
+		self.ui.imageLabel.setPixmap( QPixmap.fromImage( self.weightPlot ) )
+		self.ui.scrollArea.setWidget( self.ui.imageLabel )
+
+		self.con = sqlite3.connect( "data/db" )
 		self.con.row_factory = sqlite3.Row
 		self.con.isolation_level = None
 		self.cur = self.con.cursor()
 
 		self.dbExercises()
 		self.dbSplit()
+
+		layout = QVBoxLayout(self)
+		layout.addWidget(self.ui.tabWidget)
 
 	def insertItem( self, table, item ):
 		row = table.rowCount()
