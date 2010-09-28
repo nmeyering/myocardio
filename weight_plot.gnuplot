@@ -1,5 +1,5 @@
-set term pngcairo;
-set output "data/weight_plot.png"
+set term svg;
+set output "data/weight_plot.svg"
 set xlabel "Days since <min-date>"
 set ylabel "Weight/kg"
 f(x)=a*x+b

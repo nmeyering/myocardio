@@ -4,5 +4,5 @@ temp_file=$(mktemp)
 echo "Temporary file $temp_file created"
 minimum_date=$(sqlite3 data/db 'SELECT MIN(date) FROM session;');
 sqlite3 data/db "SELECT ROUND(JULIANDAY(session.date) - JULIANDAY('$minimum_date')),COUNT(*) FROM completed_exercise LEFT JOIN session ON session.id = completed_exercise.session_id GROUP BY completed_exercise.session_id;" | sed -e 's/|/ /' > $temp_file
-cat exercise_count.gnuplot | sed -e "s#<myfile>#$temp_file#" -e "s#<min-date>#${minimum_date}#" | gnuplot -
+cat exercise_count.gnuplot | sed -e "s#<myfile>#$temp_file#" -e "s#<min-date>#${minimum_date}#" | gnuplot - > /dev/null
 rm $temp_file
