@@ -22,6 +22,7 @@ class SessionDialog( QDialog ):
 		self.ui.addButton.clicked.connect( self.addExerciseItem )
 		self.ui.deleteButton.clicked.connect( self.deleteItem )
 		self.splitbox.currentIndexChanged.connect( self.fillSplitTable )
+		self.ui.updateButton.clicked.connect( self.fillSplitTable )
 
 		self.ui.dateTimeEdit.setDateTime( QDateTime.currentDateTime() )
 
@@ -63,6 +64,9 @@ class SessionDialog( QDialog ):
 		row = self.table.currentRow()
 		self.table.removeRow( row )
 			
+	def clearTable( self, table ):
+		for i in range( table.rowCount() ):
+			table.removeRow( 0 )
 	
 	def dbSplit( self ):
 		self.cur.execute("SELECT * FROM 'split';")
@@ -83,8 +87,7 @@ class SessionDialog( QDialog ):
 
 		splitTable = self.ui.splitplanTable
 
-		for i in range( splitTable.rowCount() ):
-			splitTable.removeRow( 0 )
+		self.clearTable( splitTable )
 
 		for r in rows:
 			self.insertItem( splitTable, [ str(i) for i in list(r) ] )
@@ -109,5 +112,6 @@ class SessionDialog( QDialog ):
 						float( self.table.item(row, 2).text() )
 					)
 				)
+			self.clearTable( self.table )
 		except sqlite3.Error as e:
 			print("An error occurred:", e.args[0])
